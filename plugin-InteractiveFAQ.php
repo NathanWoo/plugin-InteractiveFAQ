@@ -36,4 +36,59 @@ if (! function_exists("add_action")){
 	echo "Access permission denied";
 	exit;
 }
+
+class TestingClass {
+	function register(){
+		add_action('admin_enqueue_scripts', array($this, 'enqueue'));
+	}
+
+	function activate() {
+		$this->custom_post_type();;
+		flush_rewrite_rules();
+		// generate TCP
+		// flush rewrite rules
+	}
+
+	function deactivate() {
+		flush_rewrite_rules();
+		// flush rewrite rules
+	}
+
+	function uninstall() {
+		// delete CPT
+		//delete all the plugin data from the DB
+	}
+
+	protected function create_post_type(){
+		add_action('init', array($this, 'custom_post_type'));
+	}
+
+	function custom_post_type (){
+		register_post_type('FAQ', ['public' => true, 'label' => 'FAQ']);
+	}
+
+	function enqueue() {
+		wp_enqueue_style('myplugintyle', plugins_url('assets/mystyle.css', __FILE__ ) );
+		wp_enqueue_script('myplugintyle', plugins_url('assets/myscript.js', __FILE__ ) );
+	}
+
+	
+}
+
+if (class_exists('TestingClass')){
+	// $TestingClass1 = new TestingClass();
+	// $TestingClass1 -> register();
+}
+
+
+// customFunction("This is my arg");
+
+// Wordpress triggers plugin at these time:
+// activation 
+register_activation_hook(__FILE__ , array($TestingClass1, 'activate'));
+// deactivation
+register_deactivation_hook(__FILE__ , array($TestingClass1, 'deactivate'));
+// unistalled
+register_uninstall_hook(__FILE__ , array($TestingClass1, 'uninstall'));
+
 // Preventing clients interact directly with the plugin
